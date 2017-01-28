@@ -1,0 +1,37 @@
+import 'should';
+import 'should-sinon';
+import request from 'supertest';
+import sinon from 'sinon';
+import { odata, conn, host, port, bookSchema, initData } from './support/setup';
+
+describe('hook.all.after', function() {
+  let data, httpServer, server;
+
+  beforeEach(async function() {
+    data = await initData();
+    server = odata(conn);
+  });
+
+  afterEach(() => {
+    httpServer.close();
+  });
+
+  it('should work', async function() {
+    const callback = sinon.spy();
+    server.resource('book', bookSchema).all().after((entity) => {
+      entity.should.be.have.property('title');
+      callback();
+    });
+    httpServer = server.listen(port);
+    await request(host).get(`/book(${data[0].id})`);
+    callback.should.be.called();
+  });
+  it('should work with multiple hooks', async function() {
+    const callback = sinon.spy();
+    server.resource('book', bookSchema).all().after(callback).after(callback);
+    httpServer = server.listen(port);
+    await request(host).get(`/book(${data[0].id})`);
+    callback.should.be.calledTwice();
+  });
+});
+

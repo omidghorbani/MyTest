@@ -1,0 +1,12 @@
+{
+  "name": "socket-chat-example",
+  "version": "0.0.1",
+  "description": "my first socket.io app",
+  "dependencies": {
+    "express": "^4.14.0",
+    "mongodb": "^2.2.21",
+    "nedb": "^1.8.0",
+    "simple-odata-server": "^0.2.0",
+    "socket.io": "^1.7.2"
+  }
+}
